@@ -37,8 +37,25 @@ server.get('/users', (req, res) => {
     res.status(200).json({ success: true, users: users});
   })
   .catch(err => {
-    res.status(500).json({ success: false, error: "The users information could not be retrieved." })
+    res.status(500).json({ success: false, error: "The users information could not be retrieved." });
   });
+});
+
+// GET - return user matching id
+server.get('/users/:id', (req, res) => {
+  // console.log(req.params);
+  const userId = req.params.id;
+  db.findById(userId)
+    .then(user => {
+      if (user.length === 0) {
+        res.status(404).json({ success: false, message: "The user with the specified ID does not exist." });
+      } else {
+        res.status(200).json({ success: true, message: user });
+      }
+    })
+    .catch( err => {
+      res.status(500).json({ success: false, error: "The user information could not be retrieved." });
+    });
 });
 
 // config port
