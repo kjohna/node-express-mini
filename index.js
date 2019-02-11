@@ -17,7 +17,8 @@ server.post('/users', (req, res) => {
   const user = req.body;
 
   if (!user.name || !user.bio) {
-    res.status(400).json({ success: false, errorMessage: "Please provide name and bio for the user." }).end();
+    res.status(400).json({ success: false, errorMessage: "Please provide name and bio for the user." });
+    return;
   }
 
   db.insert(user)
