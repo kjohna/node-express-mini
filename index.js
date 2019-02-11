@@ -13,7 +13,7 @@ server.get('/', (req, res) => {
 });
 
 // POST - create a user with request body
-server.post('/users', (req, res) => {
+server.post('/api/users', (req, res) => {
   const user = req.body;
 
   if (!user.name || !user.bio) {
@@ -31,7 +31,7 @@ server.post('/users', (req, res) => {
 });
 
 // GET - return all users
-server.get('/users', (req, res) => {
+server.get('/api/users', (req, res) => {
   db.find()
   .then(users => {
     res.status(200).json({ success: true, users: users});
@@ -42,9 +42,10 @@ server.get('/users', (req, res) => {
 });
 
 // GET - return user matching id
-server.get('/users/:id', (req, res) => {
+server.get('/api/users/:id', (req, res) => {
   // console.log(req.params);
   const userId = req.params.id;
+
   db.findById(userId)
     .then(user => {
       if (user.length === 0) {
@@ -55,6 +56,24 @@ server.get('/users/:id', (req, res) => {
     })
     .catch( err => {
       res.status(500).json({ success: false, error: "The user information could not be retrieved." });
+    });
+});
+
+// DELETE - remove user matching id
+server.delete('/api/users/:id', (req, res) =>{
+  const userId = req.params.id;
+
+  db.remove(userId)
+    .then(removed => {
+      console.log('removed: ', removed);
+      if (removed === 0) {
+        res.status(404).json({ success: false, message: "The user with the specified ID does not exist." }).end();
+      } else {
+        res.status(200).end();
+      }
+    })
+    .catch( err => {
+      res.status(500).json({ success: false, error: "The user could not be removed" });
     });
 });
 
