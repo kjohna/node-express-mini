@@ -60,12 +60,12 @@ server.get('/api/users/:id', (req, res) => {
 });
 
 // DELETE - remove user matching id
-server.delete('/api/users/:id', (req, res) =>{
+server.delete('/api/users/:id', (req, res) => {
   const userId = req.params.id;
 
   db.remove(userId)
     .then(removed => {
-      console.log('removed: ', removed);
+      // console.log('removed: ', removed);
       if (removed === 0) {
         res.status(404).json({ success: false, message: "The user with the specified ID does not exist." }).end();
       } else {
@@ -76,6 +76,32 @@ server.delete('/api/users/:id', (req, res) =>{
       res.status(500).json({ success: false, error: "The user could not be removed" });
     });
 });
+
+// PUT - update user by ID
+server.put('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+  const changes = req.body;
+
+  db.update(id, changes)
+    .then(updated => {
+      console.log('updated: ', updated);
+      if (updated === 0) {
+        res.status(404).json({ success: false, message: "The user with the specified ID does not exist." }).end();
+      } else {
+        res.status(200).json(changes);
+        // const updatedUsers = db.find()
+        //   .then(users => { 
+        //     console.log("success, users is now: ", users);
+        //     return  users 
+        //   })
+        //   .catch(err => { "The updated users information could not be retrieved." })
+        // res.status(200).json( updatedUsers );
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ success: false, error: "The user information could not be modified." });
+    });
+})
 
 // config port
 server.listen(5000, () => {
