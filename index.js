@@ -17,7 +17,7 @@ server.post('/users', (req, res) => {
   const user = req.body;
 
   if (!user.name || !user.bio) {
-    res.status(400).json({ success: false, errorMessage: "Please provide name and bio for the user." });
+    res.status(400).json({ success: false, errorMessage: "Please provide name and bio for the user." }).end();
   }
 
   db.insert(user)
@@ -29,6 +29,16 @@ server.post('/users', (req, res) => {
     });
 });
 
+// GET - return all users
+server.get('/users', (req, res) => {
+  db.find()
+  .then(users => {
+    res.status(200).json({ success: true, users: users});
+  })
+  .catch(err => {
+    res.status(500).json({ success: false, error: "The users information could not be retrieved." })
+  });
+});
 
 // config port
 server.listen(5000, () => {
