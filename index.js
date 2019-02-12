@@ -84,18 +84,22 @@ server.put('/api/users/:id', (req, res) => {
 
   db.update(id, changes)
     .then(updated => {
-      console.log('updated: ', updated);
+      // console.log('updated: ', updated);
       if (updated === 0) {
         res.status(404).json({ success: false, message: "The user with the specified ID does not exist." }).end();
       } else {
-        res.status(200).json(changes);
-        // const updatedUsers = db.find()
-        //   .then(users => { 
-        //     console.log("success, users is now: ", users);
-        //     return  users 
-        //   })
-        //   .catch(err => { "The updated users information could not be retrieved." })
-        // res.status(200).json( updatedUsers );
+        // res.status(200).json(changes);
+        // console.log("db.update success");
+        db.find()
+          .then(users => { 
+            // console.log("success, users is now: ", users);
+            res.status(200).json( users );
+            return; 
+          })
+          .catch(err => { 
+            // console.log("in the error block");
+            res.status(500).json({ success: false, message: "The updated users information could not be retrieved." });
+          });
       }
     })
     .catch(err => {
